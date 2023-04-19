@@ -4,14 +4,29 @@
 
 #include "helpers.h"
 
-
 int main(int argc, char *argv[])
 {
     // Define allowable filters
-    char *filters = "bgrse";
+    char *filters = "bgrseh";
+
+    // Define program usage message
+    char *usage = "Usage: ./pixeo [flag] infile outfile\n"
+                  "Flags:\n"
+                  "  -b  blur\n"
+                  "  -g  grayscale\n"
+                  "  -r  reflect\n"
+                  "  -s  sepia\n"
+                  "  -e  edges\n"
+                  "  -h  help\n";
 
     // Get filter flag and check validity
     char filter = getopt(argc, argv, filters);
+
+    if (filter == 'h')
+    {
+        printf("%s", usage);
+        return 0;
+    }
     if (filter == '?')
     {
         printf("Invalid filter.\n");
@@ -72,7 +87,8 @@ int main(int argc, char *argv[])
     int width = bi.biWidth;
 
     // Allocate memory for image
-    RGBTRIPLE(*image)[width] = calloc(height, width * sizeof(RGBTRIPLE));
+    RGBTRIPLE(*image)
+    [width] = calloc(height, width * sizeof(RGBTRIPLE));
     if (image == NULL)
     {
         printf("Not enough memory to store image.\n");
@@ -96,25 +112,25 @@ int main(int argc, char *argv[])
 
     switch (filter)
     {
-        case 'b':
-            blur(height, width, image);
-            break;
+    case 'b':
+        blur(height, width, image);
+        break;
 
-        case 'g':
-            grayscale(height, width, image);
-            break;
+    case 'g':
+        grayscale(height, width, image);
+        break;
 
-        case 'r':
-            reflect(height, width, image);
-            break;
+    case 'r':
+        reflect(height, width, image);
+        break;
 
-        case 's':
-            sepia(height, width, image);
-            break;
+    case 's':
+        sepia(height, width, image);
+        break;
 
-        case 'e':
-            edges(height, width, image);
-            break;
+    case 'e':
+        edges(height, width, image);
+        break;
     }
 
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
